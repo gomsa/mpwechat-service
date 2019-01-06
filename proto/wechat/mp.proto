@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package wechat;
+
+service MpWechat {
+    // 用户验证授权
+    rpc Auth(Request) returns (Token) {}
+}
+
+message Request {
+    string code = 1;
+}
+
+message Token {
+    string token = 1;
+    bool valid = 2;
+    repeated Error errors = 3;
+}
+
+message Error {
+    int32 code = 1;
+    string description = 2;
+}
