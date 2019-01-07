@@ -5,10 +5,31 @@ package wechat;
 service MpWechat {
     // 用户验证授权
     rpc Auth(Request) returns (Token) {}
+    // 获取用户信息
+    rpc UserInfo(Request) returns (User) {}
+}
+
+message User {
+    string id = 1;  // uuid
+    string openid = 2; // 用户的唯一标识
+    string unionid = 3;// 用户在开放平台的唯一标识符，在满足 UnionID 下发条件的情况下会返回，详见 UnionID 机制说明。
+    string session_key = 4;// 用户昵称
+    string nickname = 5;// 会话密钥 用户授权的作用域, 使用逗号(,)分隔
+    int32 gender = 6;// 用户的性别, 值为1时是男性, 值为2时是女性, 值为0时是未知
+    string language = 7;// 显示 country，province，city 所用的语言 en	英文  zh_CN	简体中文  zh_TW	繁体中文
+    string city = 8;// 普通用户个人资料填写的城市
+    string province = 9;// 用户个人资料填写的省份
+    string country = 10;// 国家, 如中国为CN
+    // 用户头像，最后一个数值代表正方形头像大小（有0、46、64、96、132数值可选，0代表640*640正方形头像），
+	// 用户没有头像时该项为空。若用户更换头像，原有头像URL将失效。
+    string avatar_url = 11;
+    string created_at = 12;
+    string updated_at = 13;
 }
 
 message Request {
     string code = 1;
+    string token = 2;
 }
 
 message Token {
