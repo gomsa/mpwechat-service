@@ -9,6 +9,7 @@ build:
 run:
 	docker run --net="host" -p 12725 \
                     -e MICRO_REGISTRY=mdns  \
+                    -e SERVICE_NAME="gomsa.mpwechat"  \
 					-e DB_NAME="npmwechat_service"  \
                     -e DB_HOST="127.0.0.1"  \
                     -e DB_PORT="3306"  \

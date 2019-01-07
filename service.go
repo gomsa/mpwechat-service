@@ -29,7 +29,9 @@ func (srv *service) Auth(ctx context.Context, req *mp.Request, res *mp.Token) (e
 		if strings.Contains(err.Error(), "record not found") {
 			// 创建新用户
 			// bug 无用户名创建用户可能引起 bug
-			resp, err := client.Auth.Create(context.TODO(), &pb.User{})
+			resp, err := client.Auth.Create(context.TODO(), &pb.User{
+				Origin: serviceName,
+			})
 			if err != nil {
 				return err
 			}
@@ -46,7 +48,13 @@ func (srv *service) Auth(ctx context.Context, req *mp.Request, res *mp.Token) (e
 			}
 		}
 	}
-	log.Println("aa", session, user)
+	token, err := client.Auth.AuthById(context.TODO(), &pb.User{
+		Id: user.Id,
+	})
+	if err != nil {
+		return err
+	}
+	res.Token = token.Token
 	return nil
 }
 func (srv *service) UserInfo(ctx context.Context, req *mp.Request, res *mp.User) (err error) {

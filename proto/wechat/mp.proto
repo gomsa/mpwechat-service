@@ -13,8 +13,8 @@ message User {
     string id = 1;  // uuid
     string openid = 2; // 用户的唯一标识
     string unionid = 3;// 用户在开放平台的唯一标识符，在满足 UnionID 下发条件的情况下会返回，详见 UnionID 机制说明。
-    string session_key = 4;// 用户昵称
-    string nickname = 5;// 会话密钥 用户授权的作用域, 使用逗号(,)分隔
+    string session_key = 4;// 会话密钥 用户授权的作用域, 使用逗号(,)分隔
+    string nickname = 5;// 用户昵称
     int32 gender = 6;// 用户的性别, 值为1时是男性, 值为2时是女性, 值为0时是未知
     string language = 7;// 显示 country，province，city 所用的语言 en	英文  zh_CN	简体中文  zh_TW	繁体中文
     string city = 8;// 普通用户个人资料填写的城市

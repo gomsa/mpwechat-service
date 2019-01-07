@@ -3,11 +3,17 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	mp "github.com/gomsa/mpwechat-service/proto/wechat"
 	local "github.com/gomsa/mpwechat-service/service"
 	"github.com/jinzhu/gorm"
 	micro "github.com/micro/go-micro"
+)
+
+var (
+	// serviceName 服务名称
+	serviceName = os.Getenv("SERVICE_NAME")
 )
 
 func autoMigrate(db *gorm.DB) {
@@ -27,7 +33,7 @@ func main() {
 	// 自动数据库迁移
 	autoMigrate(db)
 	srv := micro.NewService(
-		micro.Name("gomsa.mpwechat"),
+		micro.Name(serviceName),
 		micro.Version("latest"),
 	)
 	srv.Init()
