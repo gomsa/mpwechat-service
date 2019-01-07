@@ -17,4 +17,5 @@ run:
                     -e DB_PASSWORD="123456"  \
                     -e WECHAT_APP_ID="wx15550c1a89d982c8"  \
                     -e WECHAT_APP_SECRET="f9c11f183a5beb592ccd801298ff5533"  \
+                    -e AUTH_SERVICE="gomsa.auth"  \
                     mpwechat-service
