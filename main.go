@@ -5,8 +5,10 @@ import (
 	"log"
 	"os"
 
+	auth "github.com/gomsa/mpwechat-service/auth"
 	mp "github.com/gomsa/mpwechat-service/proto/wechat"
 	local "github.com/gomsa/mpwechat-service/service"
+
 	"github.com/jinzhu/gorm"
 	micro "github.com/micro/go-micro"
 )
@@ -35,6 +37,7 @@ func main() {
 	srv := micro.NewService(
 		micro.Name(serviceName),
 		micro.Version("latest"),
+		micro.WrapHandler(auth.Wrapper),
 	)
 	srv.Init()
 	// 用户仓库 db 接口实现
