@@ -1,7 +1,7 @@
 package service
 
 import (
-	mp "github.com/gomsa/mpwechat-service/proto/wechat"
+	mp "github.com/gomsa/mpwechat-service/proto/mpwechat"
 
 	"github.com/jinzhu/gorm"
 )

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package wechat;
+package mpwechat;
 
 service MpWechat {
     // 用户验证授权

@@ -6,9 +6,8 @@ import (
 	"log"
 	"strings"
 
-	pb "github.com/gomsa/user-service/proto/auth"
-
-	client "github.com/gomsa/mpwechat-service/client"
+	pb "github.com/gomsa/auth-service/proto/auth"
+	"github.com/gomsa/auth-service/client"
 	"github.com/micro/go-micro/metadata"
 	"github.com/micro/go-micro/server"
 )
@@ -26,7 +25,7 @@ func Wrapper(fn server.HandlerFunc) server.HandlerFunc {
 
 		// Note this is now uppercase (not entirely sure why this is...)
 		token := strings.Split(meta["Authorization"], "Bearer ")[1]
-
+		log.Println(req.ContentType(), req.Stream(), req.Request(), req.Service(), meta, req)
 		// Auth here
 		authResp, err := client.Auth.ValidateToken(context.Background(), &pb.Token{
 			Token: token,
