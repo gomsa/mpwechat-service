@@ -1,0 +1,11 @@
+{
+    "validate":{
+        "auth": [
+            {
+                "label":"MpWechat.UserInfo"
+            }
+        ],
+        "permission": [
+        ]
+    }
+}

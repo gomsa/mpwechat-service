@@ -6,11 +6,36 @@ import (
 	"log"
 	"strings"
 
-	pb "github.com/gomsa/auth-service/proto/auth"
-	"github.com/gomsa/auth-service/client"
+	authClient "github.com/gomsa/auth-service/client"
+	authPb "github.com/gomsa/auth-service/proto/auth"
+	"github.com/gomsa/mpwechat-service/providers/config"
+
 	"github.com/micro/go-micro/metadata"
 	"github.com/micro/go-micro/server"
 )
+
+// ValidateMoethod 返回认证方式
+func ValidateMoethod(method string) (action string) {
+	auth := config.Conf.Validate["auth"]
+	permission := config.Conf.Validate["permission"]
+	if isSlice(auth, method) {
+		return "auth"
+	}
+	if isSlice(permission, method) {
+		return "permission"
+	}
+	return action
+}
+
+// isSlice 是否存在
+func isSlice(slice []config.Spec, method string) bool {
+	for _, value := range slice {
+		if value.Label == method {
+			return true
+		}
+	}
+	return false
+}
 
 // Wrapper 是一个高阶函数，入参是 ”下一步“ 函数，出参是认证函数
 // 在返回的函数内部处理完认证逻辑后，再手动调用 fn() 进行下一步处理
@@ -22,17 +47,36 @@ func Wrapper(fn server.HandlerFunc) server.HandlerFunc {
 		if !ok {
 			return errors.New("no auth meta-data found in request")
 		}
-
 		// Note this is now uppercase (not entirely sure why this is...)
 		token := strings.Split(meta["Authorization"], "Bearer ")[1]
-		log.Println(req.ContentType(), req.Stream(), req.Request(), req.Service(), meta, req)
-		// Auth here
-		authResp, err := client.Auth.ValidateToken(context.Background(), &pb.Token{
-			Token: token,
-		})
-		log.Println("Auth Resp:", authResp)
-		if err != nil {
-			return err
+		// 三种方式
+		// 1、auth 只验证登录状态
+		// 2、permission 验证登录和访问 method 权限状态
+		// 3、无状态任何请求都可以访问
+		switch ValidateMoethod(req.Method()) {
+		case "auth":
+			// Auth here
+			authResp, err := authClient.Auth.ValidateToken(context.Background(), &authPb.Request{
+				Token: token,
+			})
+			log.Println("Auth Resp:", authResp)
+			if err != nil {
+				return err
+			}
+		case "permission":
+			// Auth here
+			authResp, err := authClient.Auth.ValidatePermission(context.Background(), &authPb.Request{
+				Token:   token,
+				Service: req.Service(),
+				Method:  req.Method(),
+			})
+			log.Println("Auth Resp:", authResp)
+			if err != nil {
+				return err
+			}
+		default:
+			log.Println("make dev")
+			err = fn(ctx, req, resp)
 		}
 		err = fn(ctx, req, resp)
 		return err
